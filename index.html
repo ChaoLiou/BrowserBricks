@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset="UTF-8">
+  <title>Hello World!</title>
+  <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
+  <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script>if (window.module) module = window.module;</script>
+  <style>
+    .webview {
+      width: 100%;
+      height: 100%;
+    }
+
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #444;
+    }
+
+    .wrapper {
+      display: grid;
+      grid-gap: 20px;
+    }
+
+    .wrapper-one-col {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    .wrapper-one-full-col {
+      grid-template-columns: repeat(1, 1fr);
+    }
+
+    .wrapper-one-full-col .panel {
+      min-height: 100vh;
+    }
+
+    .wrapper-two-col {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .wrapper-three-col {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .panel {
+      width: 100%;
+      height: 100%;
+      min-height: 400px;
+      display: grid;
+      align-items: center;
+      justify-items: center;
+      background: white;
+    }
+
+    .panel:last-child {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .panel:hover {
+      opacity: 0.9;
+    }
+
+    .tools {
+      display: none;
+    }
+
+    .panel:hover .tools {
+      position: absolute;
+      display: inline-flex;
+    }
+
+    .collapse {
+      display: none;
+    }
+
+    .panel:hover .remove:hover,
+    .panel:hover .expand:hover,
+    .panel:hover .collapse:hover {
+      color: darkred;
+      cursor: pointer;
+    }
+
+    .panel-one-full-col {
+      grid-column: 1 / -1;
+      min-height: 100vh;
+    }
+
+    .btn:hover {
+      color: goldenrod;
+      cursor: pointer;
+    }
+
+    .one-col .fa-pause {
+      transform: rotate(90deg);
+    }
+
+    .one-full-col,
+    .one-col,
+    .two-col {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper wrapper-three-col">
+    <div class="panel">
+      <div class="tools">
+        <div class="remove">
+          <i class="far fa-times-circle"></i>
+        </div>
+        <div class="expand view-control">
+          <i class="fas fa-expand"></i>
+        </div>
+        <div class='collapse view-control'>
+          <i class="fas fa-compress"></i>
+        </div>
+      </div>
+      <webview id="webview-1" class="webview" src="http://www.youtube.com/" allowpopups webpreferences="nodeIntegration=no,nativeWindowOpen=yes"></webview>
+    </div>
+    <div class="panel last">
+      <div class='import btn' title='import views'>
+        <i class="far fa-folder-open fa-7x"></i>
+      </div>
+      <div class="add btn" title='add a view'>
+        <i class="fas fa-plus fa-7x"></i>
+      </div>
+      <div class='export btn' title='export views'>
+        <i class="far fa-file fa-7x"></i>
+      </div>
+      <div class='one-full-col n-col btn' title='1 x n views (fullscreen)'>
+        <i class="fas fa-window-maximize fa-7x"></i>
+      </div>
+      <div class='two-col n-col btn' title='2 x n views'>
+        <i class="fas fa-th-large fa-7x"></i>
+      </div>
+      <div class='three-col n-col btn' title='3 x n views'>
+        <i class="fas fa-th fa-7x"></i>
+      </div>
+      <div class='one-col n-col btn' title='1 x n views'>
+        <i class="fas fa-pause fa-7x"></i>
+      </div>
+    </div>
+  </div>
+  <script>
+    require('./renderer.js');
+  </script>
+</body>
+
+</html>
