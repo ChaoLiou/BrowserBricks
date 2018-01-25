@@ -6,10 +6,17 @@
   <meta charset="UTF-8">
   <title>Hello World!</title>
   <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
-  <script>if (typeof module === 'object') { window.module = module; module = undefined; }</script>
+  <script>
+    if (typeof module === 'object') {
+      window.module = module;
+      module = undefined;
+    }
+  </script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
-  <script>if (window.module) module = window.module;</script>
+  <script>
+    if (window.module) module = window.module;
+  </script>
   <style>
     .webview {
       width: 100%;
@@ -61,7 +68,7 @@
       background: white;
     }
 
-    .panel:last-child {
+    .panel-dashboard {
       grid-template-columns: repeat(3, 1fr);
     }
 
@@ -82,19 +89,13 @@
       display: none;
     }
 
-    .panel:hover .remove:hover,
-    .panel:hover .expand:hover,
-    .panel:hover .collapse:hover {
-      color: darkred;
-      cursor: pointer;
-    }
-
     .panel-one-full-col {
       grid-column: 1 / -1;
       min-height: 100vh;
     }
 
-    .btn:hover {
+    .btn:hover,
+    .tools div:hover {
       color: goldenrod;
       cursor: pointer;
     }
@@ -108,34 +109,86 @@
     .two-col {
       display: none;
     }
+
+    .export {
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+    }
+
+    .period {
+      position: absolute;
+      top: 25%;
+      left: 25%;
+    }
+
+    .period-on {
+      animation: blinker 1.5s cubic-bezier(.5, 0, 1, 1) infinite alternate;
+    }
+
+    @keyframes blinker {
+      from {
+        color: yellowgreen;
+      }
+      to {
+        color: black;
+      }
+    }
+
+    .panel-dashboard>div {
+      width: 112px;
+      height: 112px;
+      position: relative;
+    }
+
+    .panel-template {
+      display: none;
+    }
+
+    .panel-mirror {
+      opacity: 0.8;
+      width: 33vw;
+      height: 400px;
+    }
   </style>
 </head>
 
 <body>
   <div class="wrapper wrapper-three-col">
-    <div class="panel">
+    <div class="panel panel-template">
       <div class="tools">
-        <div class="remove">
+        <div class="remove" title='remove view'>
           <i class="far fa-times-circle"></i>
         </div>
-        <div class="expand view-control">
+        <div class="expand view-control" title='expand view'>
           <i class="fas fa-expand"></i>
         </div>
-        <div class='collapse view-control'>
+        <div class='collapse view-control' title='collapse view'>
           <i class="fas fa-compress"></i>
         </div>
+        <div class='reload nav-control' title='reload view'>
+          <i class="fas fa-redo-alt"></i>
+        </div>
+        <div class="goback nav-control" title='go back'>
+          <i class="fas fa-arrow-circle-left"></i>
+        </div>
+        <div class="goforward nav-control" title='go forward'>
+          <i class="fas fa-arrow-circle-right"></i>
+        </div>
       </div>
-      <webview id="webview-1" class="webview" src="http://www.youtube.com/" allowpopups webpreferences="nodeIntegration=no,nativeWindowOpen=yes"></webview>
+      <webview class="webview" allowpopups webpreferences="nodeIntegration=no,nativeWindowOpen=yes"></webview>
     </div>
-    <div class="panel last">
-      <div class='import btn' title='import views'>
-        <i class="far fa-folder-open fa-7x"></i>
+    <div class="panel panel-dashboard">
+      <div class="file-explorer-control">
+        <div class='import btn' title='import views'>
+          <i class="far fa-folder-open fa-5x"></i>
+        </div>
+        <div class='export btn' title='export views'>
+          <i class="far fa-file fa-5x"></i>
+        </div>
       </div>
       <div class="add btn" title='add a view'>
         <i class="fas fa-plus fa-7x"></i>
-      </div>
-      <div class='export btn' title='export views'>
-        <i class="far fa-file fa-7x"></i>
       </div>
       <div class='one-full-col n-col btn' title='1 x n views (fullscreen)'>
         <i class="fas fa-window-maximize fa-7x"></i>
@@ -148,6 +201,15 @@
       </div>
       <div class='one-col n-col btn' title='1 x n views'>
         <i class="fas fa-pause fa-7x"></i>
+      </div>
+      <div class="reload-all btn" title='reload all views'>
+        <input type="hidden" id='intervalID'>
+        <div>
+          <i class="fas fa-redo-alt fa-7x"></i>
+        </div>
+        <div class='period'>
+          <i class="fas fa-step-forward fa-4x"></i>
+        </div>
       </div>
     </div>
   </div>
