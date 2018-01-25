@@ -25,37 +25,30 @@ $('.import').click(() => requestToMain('import'));
 $('.export').click(() => requestToMain('export', $(".webview").map((i, e) => $(e).attr('src')).get()));
 $(".n-col").click(toggleWrapperViewStyle);
 $('.reload-all').click(changeReloadSetting);
+$('.remove-all').click(askForRemoveAllPanels);
 
 $('.wrapper').on('click', '.remove', removeWebview);
 $('.wrapper').on('click', '.view-control', controlViewScreen);
 $('.wrapper').on('click', '.nav-control', controlNavigation);
 
 function toggleWrapperViewStyle() {
-    const $full = $('.one-full-col');
-    const $one = $('.one-col');
-    const $two = $('.two-col');
-    const $three = $('.three-col');
+    const $this = $(this);
+    $('.n-col').removeClass('active');
+    $this.addClass('active');
     const $wrapper = $('.wrapper');
-    if ($full.is(':visible')) {
-        $full.hide();
-        $three.show();
-        $wrapper.removeClass('wrapper-one-full-col');
-        $wrapper.addClass('wrapper-three-col');
-    } else if ($one.is(':visible')) {
-        $one.hide();
-        $full.show();
-        $wrapper.removeClass('wrapper-one-col');
+    $wrapper.removeClass('wrapper-one-full-col')
+        .removeClass('wrapper-one-col')
+        .removeClass('wrapper-two-col')
+        .removeClass('wrapper-three-col');
+
+    if ($this.is('.one-full-col')) {
         $wrapper.addClass('wrapper-one-full-col');
-    } else if ($two.is(':visible')) {
-        $two.hide();
-        $one.show();
-        $wrapper.removeClass('wrapper-two-col');
+    } else if ($this.is('.one-col')) {
         $wrapper.addClass('wrapper-one-col');
-    } else if ($three.is(':visible')) {
-        $three.hide();
-        $two.show();
-        $wrapper.removeClass('wrapper-three-col');
+    } else if ($this.is('.two-col')) {
         $wrapper.addClass('wrapper-two-col');
+    } else if ($this.is('.three-col')) {
+        $wrapper.addClass('wrapper-three-col');
     }
 }
 
@@ -68,7 +61,7 @@ function requestToMain(eventName, data) {
 }
 
 function askForAddingWebview() {
-    dialogs.prompt('url', 'www.youtube.com', (urls) => {
+    dialogs.prompt('open a view with your url.', 'www.youtube.com', (urls) => {
         if (urls) {
             urls.split(' ').forEach((url) => addWebview(url));
         }
@@ -105,12 +98,23 @@ function autoReload(period_str) {
     }
 }
 
-
 function reload() {
     const allWebViews = $('.panel:not(.panel-template) webview');
     $.each(allWebViews, (i, e) => {
         e.reload();
     });
+}
+
+function askForRemoveAllPanels() {
+    dialogs.confirm('Do you want to remove all views?', (res) => {
+        if (res) {
+            removeAllPanels();
+        }
+    });
+}
+
+function removeAllPanels() {
+    $('.panel:not(.panel-template):not(.panel-dashboard)').remove();
 }
 
 function removeWebview() {
