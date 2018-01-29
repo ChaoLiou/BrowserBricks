@@ -4,6 +4,7 @@ const {
 const ipc = require('electron').ipcRenderer;
 const dialogs = require('dialogs')();
 const Sortable = require('@shopify/draggable/lib/sortable').default;
+let sortable = {};
 
 webFrame.setZoomFactor(1);
 addWebview('www.youtube.com');
@@ -12,24 +13,41 @@ ipc.on('urls', (event, urls) => {
     urls.forEach(url => addWebview(url));
 });
 
-const sortable = new Sortable(document.querySelector('.wrapper'), {
-    draggable: '.wrapper-three-col .panel:not(.panel-template):not(.panel-dashboard)',
-    handle: '.wrapper-three-col .panel:not(.panel-template):not(.panel-dashboard)',
-    classes: {
-        mirror: 'panel-mirror'
-    }
-});
-
 $('.add').click(askForAddingWebview);
 $('.import').click(() => requestToMain('import'));
 $('.export').click(() => requestToMain('export', $(".webview").map((i, e) => $(e).attr('src')).get()));
 $(".n-col").click(toggleWrapperViewStyle);
 $('.reload-all').click(changeReloadSetting);
 $('.remove-all').click(askForRemoveAllPanels);
+$('.settings').click(() => requestToMain('settings'));
 
 $('.wrapper').on('click', '.remove', removeWebview);
 $('.wrapper').on('click', '.view-control', controlViewScreen);
 $('.wrapper').on('click', '.nav-control', controlNavigation);
+$('.wrapper').on('click', '.move', movePanel);
+
+function movePanel() {
+    const selector = '.panel:not(.panel-dashboard)';
+    const $panel = $(selector);
+    if ($panel.hasClass('active')) {
+        $panel.removeClass('active');
+        sortable.destroy();
+    } else {
+        $panel.addClass('active');
+        sortable = new Sortable($('.wrapper')[0], {
+            draggable: selector,
+            handle: selector,
+            classes: {
+                mirror: 'panel-mirror',
+                appendTo: '.wrapper'
+            }
+        });
+        sortable.on('drag:stop', () => {
+            $panel.removeClass('active');
+            sortable.destroy()
+        });
+    }
+}
 
 function toggleWrapperViewStyle() {
     const $this = $(this);
@@ -61,7 +79,7 @@ function requestToMain(eventName, data) {
 }
 
 function askForAddingWebview() {
-    dialogs.prompt('open a view with your url.', 'www.youtube.com', (urls) => {
+    dialogs.prompt('open a view with your link.', 'www.youtube.com', (urls) => {
         if (urls) {
             urls.split(' ').forEach((url) => addWebview(url));
         }
@@ -102,6 +120,7 @@ function reload() {
     const allWebViews = $('.panel:not(.panel-template) webview');
     $.each(allWebViews, (i, e) => {
         e.reload();
+        console.log(e);
     });
 }
 

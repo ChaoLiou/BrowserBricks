@@ -30,7 +30,7 @@
     }
 
     body {
-      background-color: #444;
+      background-color:gray;
       color: #444;
     }
 
@@ -67,6 +67,7 @@
       align-items: center;
       justify-items: center;
       background: white;
+      box-shadow: 0 5px 15px 0px;
     }
 
     .panel-dashboard {
@@ -74,7 +75,7 @@
     }
 
     .panel:hover {
-      opacity: 0.9;
+      box-shadow: 0 10px 15px 0px;
     }
 
     .tools {
@@ -148,6 +149,7 @@
       position: absolute;
       width: 56px;
       height: 56px;
+      text-align: center;
     }
 
     .panel-template {
@@ -156,12 +158,40 @@
 
     .panel-mirror {
       opacity: 0.6;
-      width: 33vw;
-      height: 400px;
       border-style: solid;
       border-color: black;
       border-width: 2vh;
       border-top-width: 8vh;
+    }
+
+    .panel.active::after {
+      content: '';
+      position: fixed;
+      top:25px;
+    }
+
+    .wrapper-one-full-col .panel-mirror,
+    .wrapper-one-full-col .panel.active::after {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .wrapper-one-col .panel-mirror,
+    .wrapper-one-col .panel.active::after {
+      width: 100vw;
+      height: 50vh;
+    }
+
+    .wrapper-two-col .panel-mirror,
+    .wrapper-two-col .panel.active::after {
+      width: 50vw;
+      height: 50vh;
+    }
+
+    .wrapper-three-col .panel-mirror,
+    .wrapper-three-col .panel.active::after {
+      width: 33vw;
+      height: 50vh;
     }
 
     .active {
@@ -185,12 +215,6 @@
         <div class="remove" title='remove view'>
           <i class="far fa-times-circle"></i>
         </div>
-        <div class="expand view-control" title='expand view'>
-          <i class="fas fa-expand"></i>
-        </div>
-        <div class='collapse view-control' title='collapse view'>
-          <i class="fas fa-compress"></i>
-        </div>
         <div class='reload nav-control' title='reload view'>
           <i class="fas fa-redo-alt"></i>
         </div>
@@ -199,6 +223,15 @@
         </div>
         <div class="goforward nav-control" title='go forward'>
           <i class="fas fa-arrow-circle-right"></i>
+        </div>
+        <div class="move" title='switch to floating mode'>
+          <i class="fas fa-arrows-alt"></i>
+        </div>
+        <div class="expand view-control" title='expand view'>
+          <i class="fas fa-expand"></i>
+        </div>
+        <div class='collapse view-control' title='collapse view'>
+          <i class="fas fa-compress"></i>
         </div>
       </div>
       <webview class="webview" allowpopups webpreferences="nodeIntegration=no,nativeWindowOpen=yes"></webview>
