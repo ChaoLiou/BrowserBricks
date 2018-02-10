@@ -17,13 +17,22 @@ ipc.on('import', function (event) {
     filters: [{ name: 'Text FIle', extensions: ['txt'] }]
   }, function (files) {
     if (files && files.length > 0) {
-      var file = files[0];
+      const file = files[0];
       fs.readFile(file, 'utf-8', (err, data) => {
         if (err) {
           alert("An error ocurred reading the file :" + err.message);
           return;
         }
-        event.sender.send('urls', data.split('\r\n'));
+        let urls = data.split('\r\n');
+        urls = urls.map((url, i) => {
+          const res = /:http.*$/.exec(url);
+          if (res) {
+            return res[0].substring(1);
+          } else {
+            return url;
+          }
+        });
+        event.sender.send('urls', urls);
       });
     }
   })
@@ -31,7 +40,7 @@ ipc.on('import', function (event) {
 
 ipc.on('export', function (event, urls) {
   dialog.showSaveDialog({
-    defaultPath: 'monitor-' + new Date().toISOString().slice(0, 10).replace(/-/g, ""),
+    defaultPath: 'views-' + new Date().toISOString().slice(0, 10).replace(/-/g, ""),
     filters: [{ name: 'Text FIle', extensions: ['txt'] }]
   }, function (file) {
     if (file) {
@@ -45,16 +54,13 @@ ipc.on('export', function (event, urls) {
   })
 })
 
-ipc.on('settings', function () {
-  
-});
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow() {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600 })
+  mainWindow = new BrowserWindow({ width: 800, height: 600, fullscreenable: false })
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({

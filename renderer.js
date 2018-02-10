@@ -7,7 +7,7 @@ const Sortable = require('@shopify/draggable/lib/sortable').default;
 let sortable = {};
 
 webFrame.setZoomFactor(1);
-addWebview('www.youtube.com');
+addWebview('http://www.youtube.com/');
 
 ipc.on('urls', (event, urls) => {
     urls.forEach(url => addWebview(url));
@@ -15,16 +15,41 @@ ipc.on('urls', (event, urls) => {
 
 $('.add').click(askForAddingWebview);
 $('.import').click(() => requestToMain('import'));
-$('.export').click(() => requestToMain('export', $(".webview").map((i, e) => $(e).attr('src')).get()));
+$('.export').click(() => requestToMain('export', $(".panel:not(.panel-template) .webview").map((i, e) => e.getTitle() + ':' + e.getURL()).toArray()));
 $(".n-col").click(toggleWrapperViewStyle);
 $('.reload-all').click(changeReloadSetting);
 $('.remove-all').click(askForRemoveAllPanels);
-$('.settings').click(() => requestToMain('settings'));
+$('.silence-all').click(toggleAllViewsAudioSound);
 
 $('.wrapper').on('click', '.remove', removeWebview);
 $('.wrapper').on('click', '.view-control', controlViewScreen);
 $('.wrapper').on('click', '.nav-control', controlNavigation);
 $('.wrapper').on('click', '.move', movePanel);
+$('.wrapper').on('click', '.silence', toggleAudioSound);
+
+function toggleAudioSound() {
+    const $this = $(this);
+    const $panel = $this.closest('.panel');
+    const $webview = $panel.find('webview');
+    const webviewDOM = $webview[0];
+    const muted = webviewDOM.isAudioMuted();
+    webviewDOM.setAudioMuted(!muted);
+}
+
+function toggleAllViewsAudioSound() {
+    const $this = $(this);
+    const muted = $this.hasClass('active');
+    if (muted) {
+        $this.removeClass('active');
+    } else {
+        $this.addClass('active');
+    }
+
+    const allWebViews = $('.panel:not(.panel-template) webview');
+    $.each(allWebViews, (i, e) => {
+        e.setAudioMuted(muted);
+    });
+}
 
 function movePanel() {
     const selector = '.panel:not(.panel-dashboard)';
@@ -54,13 +79,13 @@ function toggleWrapperViewStyle() {
     $('.n-col').removeClass('active');
     $this.addClass('active');
     const $wrapper = $('.wrapper');
-    $wrapper.removeClass('wrapper-one-full-col')
+    $wrapper.removeClass('wrapper-two-col-split')
         .removeClass('wrapper-one-col')
         .removeClass('wrapper-two-col')
         .removeClass('wrapper-three-col');
 
-    if ($this.is('.one-full-col')) {
-        $wrapper.addClass('wrapper-one-full-col');
+    if ($this.is('.two-col-split')) {
+        $wrapper.addClass('wrapper-two-col-split');
     } else if ($this.is('.one-col')) {
         $wrapper.addClass('wrapper-one-col');
     } else if ($this.is('.two-col')) {
@@ -92,7 +117,7 @@ function changeReloadSetting() {
     const $this = $(this);
     const $period = $('.period');
     $period.removeClass('period-on');
-    dialogs.prompt('period (unit: sec, if reload once, no input and [ok])', '', (period_str) => {
+    dialogs.prompt('Do you want to reload all views? or continually reload(every ? seconds)', '', (period_str) => {
         if (period_str !== undefined) {
             if (period_str) {
                 $period.addClass('period-on');
@@ -120,7 +145,6 @@ function reload() {
     const allWebViews = $('.panel:not(.panel-template) webview');
     $.each(allWebViews, (i, e) => {
         e.reload();
-        console.log(e);
     });
 }
 
@@ -161,6 +185,7 @@ function controlNavigation() {
     const webviewDOM = $webview[0];
     if ($this.is('.reload')) {
         webviewDOM.reload();
+        webviewDOM.executeJavaScript(injectJS);
     } else if ($this.is('.goback')) {
         webviewDOM.goBack();
     } else if ($this.is('.goforward')) {
@@ -180,5 +205,11 @@ function addWebview(url) {
             .attr('id', webviewId)
             .attr('src', url);
         $panel.insertBefore('.panel-template');
+        $webview[0].addEventListener('new-window', (e) => {
+            const protocol = require('url').parse(e.url).protocol;
+            if (protocol === 'http:' || protocol === 'https:') {
+                addWebview(e.url);
+            }
+        });
     }
 }

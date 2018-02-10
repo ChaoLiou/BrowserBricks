@@ -1,1 +1,4 @@
 node_modules
+*.log
+release-builds
+release-builds-large

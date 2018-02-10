@@ -4,7 +4,7 @@
 <head>
 
   <meta charset="UTF-8">
-  <title>Hello World!</title>
+  <title>BrowserBricks</title>
   <script defer src="https://use.fontawesome.com/releases/v5.0.4/js/all.js"></script>
   <script>
     if (typeof module === 'object') {
@@ -14,13 +14,10 @@
   </script>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
-  <script>
-    if (window.module) module = window.module;
-  </script>
   <style>
     .webview {
-      width: 100%;
-      height: 100%;
+      width: 98%;
+      height: 95%;
     }
 
     *,
@@ -30,24 +27,24 @@
     }
 
     body {
-      background-color:gray;
-      color: #444;
+      background-color: #F2AE72;
+      color: #D96459;
     }
 
     .wrapper {
       display: grid;
-      grid-gap: 20px;
+      grid-gap: 10px;
     }
 
     .wrapper-one-col {
       grid-template-columns: repeat(1, 1fr);
     }
 
-    .wrapper-one-full-col {
-      grid-template-columns: repeat(1, 1fr);
+    .wrapper-two-col-split {
+      grid-template-columns: repeat(2, 1fr);
     }
 
-    .wrapper-one-full-col .panel {
+    .wrapper-two-col-split .panel {
       min-height: 100vh;
     }
 
@@ -64,9 +61,9 @@
       height: 100%;
       min-height: 400px;
       display: grid;
-      align-items: center;
+      align-items: end;
       justify-items: center;
-      background: white;
+      background: #8C4646;
       box-shadow: 0 5px 15px 0px;
     }
 
@@ -98,11 +95,11 @@
 
     .btn:hover,
     .tools div:hover {
-      color: goldenrod;
+      color: #F2E394;
       cursor: pointer;
     }
 
-    .one-col .fa-pause {
+    .one-col .fa-pause.rotate90 {
       transform: rotate(90deg);
     }
 
@@ -132,7 +129,7 @@
 
     @keyframes blinker {
       from {
-        color: yellowgreen;
+        color: 588C7E;
       }
       to {
         color: gray;
@@ -140,15 +137,15 @@
     }
 
     .panel-dashboard>div {
-      width: 112px;
-      height: 112px;
+      width: 125px;
+      height: 125px;
       position: relative;
     }
 
     .panel-dashboard>div div {
       position: absolute;
-      width: 56px;
-      height: 56px;
+      width: 60px;
+      height: 60px;
       text-align: center;
     }
 
@@ -167,12 +164,12 @@
     .panel.active::after {
       content: '';
       position: fixed;
-      top:25px;
+      top: 25px;
     }
 
-    .wrapper-one-full-col .panel-mirror,
-    .wrapper-one-full-col .panel.active::after {
-      width: 100vw;
+    .wrapper-two-col-split .panel-mirror,
+    .wrapper-two-col-split .panel.active::after {
+      width: 50vw;
       height: 100vh;
     }
 
@@ -195,7 +192,7 @@
     }
 
     .active {
-      color: yellowgreen;
+      color: #588C7E;
     }
 
     .reload-all .period {
@@ -233,6 +230,9 @@
         <div class='collapse view-control' title='collapse view'>
           <i class="fas fa-compress"></i>
         </div>
+        <div class="silence" title='turn on/off audio sound'>
+          <i class="fas fa-volume-up"></i>
+        </div>
       </div>
       <webview class="webview" allowpopups webpreferences="nodeIntegration=no,nativeWindowOpen=yes"></webview>
     </div>
@@ -249,32 +249,38 @@
         <i class="fas fa-plus fa-7x"></i>
       </div>
       <div class="n-col-container">
-
         <div class='three-col n-col btn position-left-top active' title='3 x n views'>
           <i class="fas fa-th fa-3x"></i>
         </div>
         <div class='two-col n-col btn position-right-top' title='2 x n views'>
           <i class="fas fa-th-large fa-3x"></i>
         </div>
-        <div class='one-col n-col btn position-left-bottom' title='1 x n views'>
-          <i class="fas fa-pause fa-3x"></i>
+        <div class='one-col n-col btn position-left-bottom ' title='1 x n views'>
+          <i class="fas fa-pause fa-3x rotate90"></i>
         </div>
-        <div class='one-full-col n-col btn position-right-bottom' title='1 x n views (fullscreen)'>
-          <i class="fas fa-window-maximize fa-3x"></i>
+        <div class='two-col-split n-col btn position-right-bottom' title='2 x n views(full height)'>
+          <i class="fas fa-pause fa-3x"></i>
         </div>
       </div>
       <div>
-        <div class="reload-all btn position-left-top" title='reload all views'>
+        <div class="silence-all btn active" title="turn on/off all view's audio sound">
+          <i class="fas fa-volume-up fa-7x"></i>
+        </div>
+      </div>
+      <div>
+        <div class="remove-all btn" title='remove all views'>
+          <i class="fas fa-trash-alt fa-7x"></i>
+        </div>
+      </div>
+      <div>
+        <div class="reload-all btn" title='reload all views'>
           <input type="hidden" id='intervalID'>
           <div>
-            <i class="fas fa-redo-alt fa-3x"></i>
+            <i class="fas fa-redo-alt fa-7x"></i>
           </div>
           <div class='period'>
-            <i class="fas fa-step-forward fa-2x"></i>
+            <i class="fas fa-step-forward fa-4x"></i>
           </div>
-        </div>
-        <div class="remove-all position-right-bottom btn" title='remove all views'>
-          <i class="far fa-times-circle fa-3x"></i>
         </div>
       </div>
     </div>
